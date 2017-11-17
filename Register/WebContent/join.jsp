@@ -24,7 +24,7 @@
 			var user_id = $('#user_id').val();
 			$.ajax({
 				type: 'POST',
-				url: './UserRegisterCheckServlet',
+				url: './ConfirmIdAction',
 				data: {user_id: user_id},
 				success: function(result){
 				if(result == 1){
