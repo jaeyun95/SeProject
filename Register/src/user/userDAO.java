@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.sql.SQLException;
 
 public class userDAO {
 
@@ -14,9 +14,9 @@ public class userDAO {
 	
 	public userDAO() {
 		try {
-			String dbURL = "jdbc:mysql://localhost:3306/se?autoReconnect=true&useSSL=false";
-			String dbID = "jy";
-			String dbPW = "1365";
+			String dbURL = "jdbc:mysql://localhost:3306/user?autoReconnect=true&useSSL=false";
+			String dbID = "blesk";
+			String dbPW = "6572609";
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPW);
 		}catch(Exception e) {
@@ -24,7 +24,7 @@ public class userDAO {
 		}
 	}
 	
-	//login
+	//Login
 	public int login(String user_id,String user_pw) {
 		String SQL = "SELECT user_pw FROM USER WHERE user_id = ?";
 		try {
@@ -97,5 +97,102 @@ public class userDAO {
 		return -1;//error
 	}
 	
-
+	//get user info
+	public userDTO getUser(String user_id) {
+		String sql = "select * from user where user_id=?";
+		userDTO user = new userDTO();
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user_id);
+			rs = pstmt.executeQuery();
+			
+			rs.next();
+			user.setUser_name(rs.getString("user_name"));
+			user.setUser_age(rs.getString("user_age"));
+			user.setUser_phone(rs.getString("user_phone"));
+			user.setUser_id(rs.getString("user_id"));
+			user.setUser_pw(rs.getString("user_pw"));
+			user.setUser_hope(rs.getString("user_hope"));
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {
+				if(rs !=null) rs.close();
+				if(pstmt !=null) pstmt.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return user;
+	}
+	
+	//user_phone modify
+	public boolean modifyPhone(String user_id, String user_phone) {
+		String sql = "update user set user_phone=? where user_id=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user_phone);
+			pstmt.setString(2, user_id);
+			pstmt.executeUpdate();
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//user_pw modify
+	public boolean modifyPasswd(String user_id, String user_pw) {
+		String sql = "update user set user_pw=? where user_id=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user_pw);
+			pstmt.setString(2, user_id);
+			pstmt.executeUpdate();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	//user delete
+	public boolean deleteUser(String user_id) {
+		String sql = "delete from user where user_id=?";
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, user_id);
+			pstmt.executeQuery();
+		}catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		}finally {
+			try {
+				if(rs != null) rs.close();
+				if(pstmt != null) pstmt.close();
+			}catch(Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+		return true;
+	}
 }
