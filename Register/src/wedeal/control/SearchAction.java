@@ -34,6 +34,4 @@ public class SearchAction extends HttpServlet {
 		}
 		return "success"; //반환형이 string형이기 때문에 일단 해놈. 상의 ㄱㄱ
 	}
-	}
-
 }

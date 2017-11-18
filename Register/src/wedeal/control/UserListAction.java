@@ -24,7 +24,7 @@ public class UserListAction extends HttpServlet {
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<UserDataBean> userList = null;
-		userList = UserDBBean.getInstance().getAllUser();
+		userList = UserDBBean.getinstance().getAllUser();
 		if(userList.size() > 0)
 			request.setAttribute("userList", userList);
 		request.setAttribute("count", new Integer(userList.size()));
