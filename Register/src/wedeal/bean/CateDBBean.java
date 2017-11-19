@@ -17,13 +17,12 @@ import javax.naming.InitialContext;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
-import wedeal.bean.CateDataBean;
-
 
 public class CateDBBean {
-	private Connection conn = null;
+	private Connection conn;
 	private PreparedStatement pstmt;
 	private ResultSet rs;
+	
 	
 	private static CateDBBean instance = new CateDBBean();
 	

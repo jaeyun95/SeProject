@@ -1,6 +1,6 @@
-package board;
+package wedeal.bean;
 
-public class boardDTO {
+public class BoardDataBean {
 	
 	private int cate_num;
 	private int board_num;
@@ -11,7 +11,7 @@ public class boardDTO {
 	private String board_content;
 	private String board_image;
 	private String board_path;
-	private String board_hit;
+	private int board_hit;
 	public int getCate_num() {
 		return cate_num;
 	}
@@ -66,10 +66,10 @@ public class boardDTO {
 	public void setBoard_path(String board_path) {
 		this.board_path = board_path;
 	}
-	public String getBoard_hit() {
+	public int getBoard_hit() {
 		return board_hit;
 	}
-	public void setBoard_hit(String board_hit) {
+	public void setBoard_hit(int board_hit) {
 		this.board_hit = board_hit;
 	}
 	

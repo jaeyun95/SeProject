@@ -1,4 +1,4 @@
-package board;
+package wedeal.control;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -16,14 +16,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-@WebServlet("/boardWrite")
-public class BoardWriteServlet extends HttpServlet {
+@WebServlet("/BoardWriteAction")
+public class BoardWriteAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String board_path = "C:\\Users\\jaeyo\\eclipse-workspace\\image";
 	private static String enType = "utf-8";
 	private static int maxSize = 1 * 1024 * 1024; 
 	
-    public BoardWriteServlet() {
+    public BoardWriteAction() {
         super();
     }
 
@@ -69,6 +69,9 @@ public class BoardWriteServlet extends HttpServlet {
 			count++;
 		}
 		
+		boarddt.setBoard_image(board_image);
+		boarddt.setBoard_path(board_path);
+		
 	   //<끝>업로드 된 파일 저장---------------------------------------------------------------------------------------------------------------
 	    
 		if(boarddt.getBoard_title() == null || boarddt.getBoard_title().equals("") || boarddt.getBoard_content() == null || boarddt.getBoard_content().equals("")) {
@@ -79,8 +82,6 @@ public class BoardWriteServlet extends HttpServlet {
 		}
 		
 		else {
-			boardDAO boarddao=new boardDAO();
-			
 			int result = board.write(boarddt);
 			
 			if(result == -1) {

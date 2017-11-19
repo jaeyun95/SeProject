@@ -10,6 +10,7 @@ public class CateDataBean {
 	private String cate_name;
 	private String cate_date;
 	private int cate_parent;
+	
 	public int getCate_num() {
 		return cate_num;
 	}
