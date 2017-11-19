@@ -10,6 +10,7 @@ public class CateDataBean {
 	private String cate_name;
 	private String cate_date;
 	private int cate_parent;
+	private boolean cate_available;
 	
 	public int getCate_num() {
 		return cate_num;
@@ -35,4 +36,11 @@ public class CateDataBean {
 	public void setCate_parent(int cate_parent) {
 		this.cate_parent = cate_parent;
 	}
+	public boolean isCate_available() {
+		return cate_available;
+	}
+	public void setCate_available(boolean cate_available) {
+		this.cate_available = cate_available;
+	}
+	
 }

@@ -65,7 +65,7 @@ public class BoardDBBean {
 	
 	//DB에 입력 글쓰기
 	public int write(BoardDataBean board) {
-		String SQL="INSERT INTO board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String SQL="INSERT INTO board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt=conn.prepareStatement(SQL);
 			pstmt.setInt(1, board.getCate_num());
@@ -78,6 +78,7 @@ public class BoardDBBean {
 			pstmt.setString(8, board.getBoard_image());
 			pstmt.setString(9, board.getBoard_path());
 			pstmt.setInt(10, 0);
+			pstmt.setInt(11, 1);
 			return pstmt.executeUpdate();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -87,7 +88,7 @@ public class BoardDBBean {
 	
 	//전체 게시글 list로 출력
 	public ArrayList<BoardDataBean> getList(int pageNumber){
-		String SQL="SELECT * FROM board WHERE board_num < ? ORDER BY board_num DESC LIMIT 8";
+		String SQL="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
 		
 		try {
@@ -106,6 +107,7 @@ public class BoardDBBean {
 				board.setBoard_image(rs.getString(8));
 				board.setBoard_path(rs.getString(9));
 				board.setBoard_hit(rs.getInt(10));
+				board.setBoard_available(rs.getInt(11));
 				list.add(board);
 			}
 		}catch(Exception e) {
@@ -116,7 +118,7 @@ public class BoardDBBean {
 	
 	//페이징 처리를 위한 nextpage함수
 	public boolean nextPage(int pageNumber) {
-		String SQL="SELECT * FROM board WHERE board_num < ? ORDER BY board_num DESC LIMIT 8";
+		String SQL="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		
 		try {
 			PreparedStatement pstmt=conn.prepareStatement(SQL);
@@ -147,7 +149,7 @@ public class BoardDBBean {
 	}
 	
 	public BoardDataBean getBoard(int board_num) {
-		String SQL="SELECT * FROM board WHERE board_num = ?";
+		String SQL="SELECT * FROM board WHERE board_num = ? AND board_available = 1";
 		try {
 			PreparedStatement pstmt=conn.prepareStatement(SQL);
 			pstmt.setInt(1, board_num);
@@ -164,6 +166,7 @@ public class BoardDBBean {
 				board.setBoard_image(rs.getString(8));
 				board.setBoard_path(rs.getString(9));
 				board.setBoard_hit(rs.getInt(10));
+				board.setBoard_available(rs.getInt(11));
 				count(board.getBoard_num(),board.getBoard_hit()+1);
 				return board;
 			}
@@ -172,10 +175,11 @@ public class BoardDBBean {
 		}
 		return null;
 	}
+	
 	//현재 게시글의 총 개수를 세준다.
 	public int allCount(int cate_num) {
-		String SQL1 = "SELECT COUNT(*) FROM board";
-		String SQL2 = "SELECT COUNT(*) FROM board WHERE cate_num = ?";
+		String SQL1 = "SELECT COUNT(*) FROM board WHERE board_available = 1";
+		String SQL2 = "SELECT COUNT(*) FROM board WHERE cate_num = ? AND board_available = 1";
 		try {
 			if(cate_num == 0) {
 				PreparedStatement pstmt=conn.prepareStatement(SQL1);
@@ -195,5 +199,39 @@ public class BoardDBBean {
 			e.printStackTrace();
 		}
 		return -1;//오류
+	}
+	
+	//수정시 사용
+	public int update(BoardDataBean board) {
+		String SQL="UPDATE board SET board_title = ?, board_price = ?, board_content = ?, board_image = ?, board_path = ? WHERE board_num = ?";
+		
+		try {
+			PreparedStatement pstmt=conn.prepareStatement(SQL);
+			pstmt.setString(1, board.getBoard_title());
+			pstmt.setInt(2, board.getBoard_price());
+			pstmt.setString(3, board.getBoard_content());
+			pstmt.setString(4, board.getBoard_image());
+			pstmt.setString(5, board.getBoard_path());
+			pstmt.setInt(6, board.getBoard_num());
+			return pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+	
+	//삭제시 사용
+	public int delete(int board_num) {
+		String SQL="UPDATE board SET board_available = ? WHERE board_num = ?";
+		
+		try {
+			PreparedStatement pstmt=conn.prepareStatement(SQL);
+			pstmt.setInt(1, 0);
+			pstmt.setInt(2, board_num);
+			return pstmt.executeUpdate();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }

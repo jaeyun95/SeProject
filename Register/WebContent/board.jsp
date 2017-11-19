@@ -30,7 +30,7 @@
 			var user_id = $('#user_id').val();
 			$.ajax({
 				type: 'POST',
-				url: './UserLogoutServlet',
+				url: './LogoutAction',
 			})
 		}
 	</script>
@@ -61,7 +61,6 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="index.jsp">메인</a></li>
-				<li><a href="board.jsp">게시판</a></li>
 			</ul>
 			<c:if test="${user_id eq null}">
 			<ul class="nav navbar-nav navbar-right">
@@ -90,6 +89,7 @@
 	</nav>
 	<div id="catelist">
 	<ul>
+	<li><a href="board.jsp">게시판</a></li>
 	<%
 	//수정할것임
 		CateDBBean cate = CateDBBean.getinstance();
@@ -155,9 +155,9 @@
 							String image = list.get(i).getBoard_image();
 							String[] images = image.split("/");
 				%>
-						<td align="center"><a href="view.jsp?board_num=<%=list.get(i).getBoard_num() %>"><%=list.get(i).getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></a><%="<br>"%>
+						<td align="center"><a href="view.jsp?board_num=<%=list.get(i).getBoard_num() %>&user_id=${user_id}"><%=list.get(i).getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></a><%="<br>"%>
 						<label>작성자:<%=list.get(i).getUser_id() %></label><%="<br>"%>
-						<a href="view.jsp?board_num=<%=list.get(i).getBoard_num()%>"><img src="<%= list.get(i).getBoard_path() %>\<%= images[0] %>" height= 200px width=200px></a><%="<br>"%>
+						<a href="view.jsp?board_num=<%=list.get(i).getBoard_num()%>&user_id=${user_id}"><img src="<%= list.get(i).getBoard_path() %>\<%= images[0] %>" height= 200px width=200px></a><%="<br>"%>
 						<%=list.get(i).getBoard_date().substring(0,11) + list.get(i).getBoard_date().substring(11,13)+"시" + list.get(i).getBoard_date().substring(14,16)+"분"%></td>
 				<% 
 						if((i+1)%4==0 && i>0) {

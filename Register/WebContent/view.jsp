@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="board.boardDTO" %>
-<%@ page import="board.boardDAO" %>
-<%@ page import="comment.commentDAO" %>
-<%@ page import="comment.commentDTO" %>
+<%@ page import="wedeal.bean.*" %>
 <%@ page import="java.util.ArrayList" %>
-
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- 
 	게시글 보는 페이지
 	board.jsp에서 누른 게시글에 대한 board_num를 받아옴.
@@ -21,6 +18,7 @@
 	<meta name="viewport" content="width=device-width", initial-scale="1">
 	<link rel="stylesheet" href="css/bootstrap.css">
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
 	<title>메인 화면</title>
 	<script type="text/javascript">
@@ -28,7 +26,7 @@
 			var user_id = $('#user_id').val();
 			$.ajax({
 				type: 'POST',
-				url: './UserLogoutServlet',
+				url: './LogoutAction',
 			})
 		}
 	</script>
@@ -47,8 +45,7 @@
 			script.println("location.href = 'board.jsp'");
 			script.println("</script>");
 		}
-		int out_cate_num = Integer.parseInt(request.getParameter("out_cate_num"));
-		boardDTO boarddto = new boardDAO().getBoard(out_cate_num,board_num);
+		BoardDataBean board = BoardDBBean.getinstance().getBoard(board_num);
 	%>
 		<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -63,7 +60,6 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="index.jsp">메인</a></li>
-				<li><a href="board.jsp">게시판</a></li>
 			</ul>
 			<c:if test="${user_id eq null}">
 			<ul class="nav navbar-nav navbar-right">
@@ -90,6 +86,32 @@
 			</c:if>
 		</div>
 	</nav>
+	<div id="catelist">
+	<ul>
+	<li><a href="board.jsp">게시판</a></li>
+	<%
+	//수정할것임
+		CateDBBean cate = CateDBBean.getinstance();
+		ArrayList<CateDataBean> out_cate = cate.getList();
+		ArrayList<CateDataBean> in_cate = cate.in_getList();
+		for(int i = 0; i < out_cate.size(); i++){
+	%>
+		<li><a href="board.jsp?cate_num=<%=out_cate.get(i).getCate_num()%>"><%= out_cate.get(i).getCate_name()%></a></li>
+		<ul>
+	<%
+		for(int j = 0; j < in_cate.size(); j++){
+			if(in_cate.get(j).getCate_parent() == out_cate.get(i).getCate_num()){
+	%>
+		<li><a href="board.jsp?cate_num=<%=in_cate.get(j).getCate_num()%>"><%=in_cate.get(j).getCate_name()%></a></li>
+	<%
+			}}
+	%>
+		</ul>
+	<%	
+		}
+	%>
+		</ul>
+	</div>
 	<!-- 게시글에 관련된 부분 -->
 	<div class="container">
 		<div class="row">
@@ -103,35 +125,35 @@
 				<tbody>
 					<tr>
 						<td style="width: 20%;">글 제목</td>
-						<td colspan="2"><%= boarddto.getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>") %></td>
+						<td colspan="2"><%= board.getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>") %></td>
 					</tr>
 					<tr>
 						<td>작성자</td>
-						<td colspan="2"><%= boarddto.getUser_id()%></td>
+						<td colspan="2"><%= board.getUser_id()%></td>
 					</tr>
 					<tr>
 						<td>조회수</td>
-						<td colspan="2"><%= boarddto.getBoard_hit() %></td>
+						<td colspan="2"><%= board.getBoard_hit() %></td>
 					</tr>
 					<tr>
 						<td>작성 일자</td>
-						<td><%=boarddto.getBoard_date().substring(0,11) + boarddto.getBoard_date().substring(11,13)+"시" + boarddto.getBoard_date().substring(14,16)+"분"%></td>
+						<td><%=board.getBoard_date().substring(0,11) + board.getBoard_date().substring(11,13)+"시" + board.getBoard_date().substring(14,16)+"분"%></td>
 					</tr>
 					<tr>
 						<td>내용</td>
-						<td colspan="2" style="min-height: 200px, text-align: left;"><%= boarddto.getBoard_content().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></td>
+						<td colspan="2" style="min-height: 200px, text-align: left;"><%= board.getBoard_content().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></td>
 					</tr>
 					<tr>
 						<td>물품 사진</td>
 						<td colspan="2" align="center">
 						<%
-							String image = boarddto.getBoard_image();
+							String image = board.getBoard_image();
 							String[] images = image.split("/");
 							for(int i = 0; i < images.length; i++)
-								{	System.out.println(images[i]);
+								{
 						
 						%>
-						<img src="<%= boarddto.getBoard_path() %>\<%= images[i] %>" height= 300px width=300px><%="<br>"%>
+						<img src="<%= board.getBoard_path() %>\<%= images[i] %>" height= 300px width=300px><%="<br>"%>
 						<%
 							}
 						%>
@@ -140,13 +162,13 @@
 					</tr>
 				</tbody>
 			</table>
-			<a href="board.jsp?out_cate_num=<%=out_cate_num%>&in_cate_num=<%=boarddto.getIn_cate_num()%>" class="btn btn-primary">목록</a>
+			<a href="board.jsp?cate_num=<%=board.getBoard_num()%>" class="btn btn-primary">목록</a>
 			<%
-				if( session_id !=null && session_id.equals(boarddto.getUser_id())){
+				if(request.getParameter("user_id").equals(board.getUser_id())){
 			%>
-					<a href="update.jsp?out_cate_num=<%=out_cate_num%>&in_cate_num=<%=boarddto.getIn_cate_num()%>&board_num=<%= board_num%>" class="btn btn-primary">수정</a>
-					<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteServlet?out_cate_num=<%=out_cate_num %>&board_num=<%= board_num%>" class="btn btn-primary">삭제</a>
-					<a href="/UserLikeServlet?board_num=<%= board_num %>" class="btn btn-primary">좋아요</a>
+					<a href="update.jsp" class="btn btn-primary">수정</a>
+					<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteAction?cate_num=<%=board.getCate_num()%>&board_num=<%=board.getBoard_num() %>" class="btn btn-primary">삭제</a>
+					<a href="/UserLikeServlet?board_num=<%= board.getBoard_num() %>&cate_num<%=board.getCate_num() %>" class="btn btn-primary">좋아요</a>
 			<%
 				}
 			%>
@@ -155,7 +177,7 @@
 	
 	<div class="container">
 	<div class="row">
-		<form method="post" action="./commentWrite?board_num=<%=boarddto.getBoard_num()%>">
+		<form method="post" action="./commentWrite?board_num=<%=board.getBoard_num()%>">
 			<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 				<thead>
 					<tr>
@@ -163,9 +185,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<%
-						if( session_id !=null){
-					%>
+					<c:if test="${user_id ne null}">
 					<tr>
 						<td colspan="4"><textarea class="form-control" placeholder="댓글  내용" name="comment_content" maxlength="200" style="height: 100px;"></textarea></td>
 					</tr>
@@ -174,33 +194,29 @@
 						<input type="submit" class="btn btn-primary" value="등록">
 						</td>
 					</tr>
-					<%
-						}
-						else {
-					%>
+					</c:if>
+					<c:if test="${user_id eq null}">
 					<tr>
 						<td colspan="4">댓글을 남기려면 로그인을 해주세요!</td>
 					</tr>
+					</c:if>
 					<%
-						}
-						ArrayList<commentDTO> list = new commentDAO().getList(boarddto.getBoard_num());
+						ArrayList<CommentDataBean> list = CommentDBBean.getinstance().getList(board.getBoard_num());
 						for(int i = 0; i < list.size(); i++){
 					%>
 					<tr>
 						<td><%=list.get(i).getUser_id() %></td>
 						<td><%=list.get(i).getComment_content() %></td>
 						<td><%=list.get(i).getComment_date().substring(0,11) + list.get(i).getComment_date().substring(11,13)+"시" + list.get(i).getComment_date().substring(14,16)+"분"%></td>
+					<c:if test="${user_id eq board.getUser_id()}">
 					<%
-						if( session_id !=null && session_id.equals(boarddto.getUser_id())){
 								int comment_num = list.get(i).getComment_num();
 					%>
 						<td>
 						<input type=button onclick="updateComment();" class="btn btn-primary" value="수정"></a>
 						<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="./commentDeleteServlet?comment_num=<%=comment_num %>&board_num=<%=board_num %>" class="btn btn-primary">삭제</a>
 						</td>
-					<%
-							}
-					%>
+					</c:if>
 					</tr>
 					<%
 						}	

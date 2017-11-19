@@ -12,6 +12,8 @@ public class BoardDataBean {
 	private String board_image;
 	private String board_path;
 	private int board_hit;
+	private int board_available;
+	
 	public int getCate_num() {
 		return cate_num;
 	}
@@ -71,6 +73,12 @@ public class BoardDataBean {
 	}
 	public void setBoard_hit(int board_hit) {
 		this.board_hit = board_hit;
+	}
+	public int isBoard_available() {
+		return board_available;
+	}
+	public void setBoard_available(int board_available) {
+		this.board_available = board_available;
 	}
 	
 	
