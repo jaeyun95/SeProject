@@ -17,13 +17,12 @@ import javax.naming.InitialContext;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
-import wedeal.bean.CateDataBean;
-
 
 public class CateDBBean {
-	private Connection conn = null;
+	private Connection conn;
 	private PreparedStatement pstmt;
 	private ResultSet rs;
+	
 	
 	private static CateDBBean instance = new CateDBBean();
 	
@@ -102,7 +101,6 @@ public class CateDBBean {
 				//만약 cate_parent가 존재하지 않으면 -1리턴 (오류)
 				if(getBoard(cate_parent) == null)
 					return -1;
-				
 				pstmt.setInt(4, cate_parent);
 				return pstmt.executeUpdate();
 			}catch(Exception e) {
@@ -122,7 +120,9 @@ public class CateDBBean {
 				CateDataBean catedatabean = new CateDataBean();
 				catedatabean.setCate_num(rs.getInt(1));
 				catedatabean.setCate_name(rs.getString(2));
-				catedatabean.setCate_parent(rs.getInt(3));
+				catedatabean.setCate_date(rs.getString(3));
+				catedatabean.setCate_parent(rs.getInt(4));
+				catedatabean.setCate_available(rs.getBoolean(5));
 				return catedatabean;
 			}
 		}catch(Exception e) {
