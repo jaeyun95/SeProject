@@ -1,23 +1,15 @@
 <!-- 
 메니저 메인페이지
 작성자: 주한솔
-수정자: 
-최종수정일: 17.11.15
+수정자: 주한솔(11.19)
+:
+최종수정일: 17.11.19
  -->
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<link rel="stylesheet" href="/shoppingmall/css/style.css"/>
-<script src="/shoppingmall/js/jquery-1.11.0.min.js"></script>
-<script src="/shoppingmall/mngr/managermain.js"></script>
-<!-- 관리자 인증이 되지 않은 경우 표시되는 내용 -->    
-<c:if test="${empty sessionScope.id}">
-  <div id="mList"><p>로그인 하세요.
-  </div>
-</c:if>
-<!-- 관리자 인증이 성공한 경우 표시되는 내용 -->
-<c:if test="${empty sessionScope.id}">
+<script src= "http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="/Register/mngr/managermain.js"></script>
 	<div id="mList">
 		<ul>
 			<li>회원 관리
@@ -44,4 +36,3 @@
 		</ul>
 
 	</div>
-</c:if>     

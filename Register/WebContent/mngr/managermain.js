@@ -24,7 +24,7 @@ $(document).ready(function(){
 		window.location.href("/shoppingmall/mg/bookList.do?book_kind=all");
 	});
 	$("#menu").click(function(){//[메뉴]버튼 클릭
-		window.location.href("/shoppingmall/mg/orderList.do");
+		window.location.href='menu/categoryList.jsp';
 	});
 	$("#spam").click(function(){//[신고글]버튼 클릭
 		window.location.href("/shoppingmall/mg/spamList.do");
