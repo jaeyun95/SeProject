@@ -42,15 +42,11 @@
 		text-decoration: none;
 	}
 	</style>
-	<c:set var="pageNumber" value=1/>
-	<c:if test = "${pageNumber ne null}">
-		<c:set var="pageNumber" value="${pageNumber}"/>
-	</c:if>
 	<%
-		//int pageNumber = 1; //기본페이지 초기값
-		//if(request.getParameter("pageNumber") != null){
-		//	pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-		//}
+		int pageNumber = 1; //기본페이지 초기값
+		if(request.getParameter("pageNumber") != null){
+			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		}
 	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -91,6 +87,7 @@
 			</c:if>
 		</div>
 	</nav>
+	
 	<div id="catelist">
 	<ul>
 	<li><a href="board.jsp">게시판</a></li>
@@ -133,12 +130,15 @@
 					ArrayList<BoardDataBean> list = board.getList(pageNumber);
 					int length = 0;
 					
+					//카테고리를 선택했을 때
 					if(request.getParameter("cate_num") != null){
 						int cate_num = Integer.parseInt(request.getParameter("cate_num"));
 						length = board.allCount(cate_num);
+						
 							//만약에 클릭된 in_cate가 있다면 그것만 보여주고 아니라면 전체보여주기
 						}
 					
+					//카테고리를 선택하지 않았을 때
 					else{
 						length = board.allCount(0);
 					}
@@ -173,7 +173,6 @@
 						}
 					}
 				%>
-				
 					</tr>
 				</tbody>
 			</table>
@@ -184,7 +183,9 @@
 			<% 
 				}
 			%>
+				<c:if test="${user_id ne null}">
 				<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
+				</c:if>
 		</div>
 	</div>
 </body>

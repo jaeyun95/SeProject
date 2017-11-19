@@ -86,15 +86,17 @@ public class BoardDBBean {
 		return -1;
 	}	
 	
+	
 	//전체 게시글 list로 출력
 	public ArrayList<BoardDataBean> getList(int pageNumber){
 		String SQL="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
 		
 		try {
-			PreparedStatement pstmt=conn.prepareStatement(SQL);
-			pstmt.setInt(1, getNext()-(pageNumber-1)*8);
-			rs=pstmt.executeQuery();
+				PreparedStatement pstmt=conn.prepareStatement(SQL);
+				pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+				rs=pstmt.executeQuery();
+
 			while(rs.next()) {
 				BoardDataBean board = new BoardDataBean();
 				board.setCate_num(rs.getInt(1));
@@ -110,10 +112,11 @@ public class BoardDBBean {
 				board.setBoard_available(rs.getInt(11));
 				list.add(board);
 			}
+			return list;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return null;
 	}
 	
 	//페이징 처리를 위한 nextpage함수
