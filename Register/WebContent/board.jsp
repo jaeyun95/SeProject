@@ -1,9 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
-<%@ page import="board.boardDAO" %>
-<%@ page import="board.boardDTO" %>
-<%@ page import="java.util.ArrayList" %>
+<%@ page import="board.*" %>
+<%@ page import="java.util.*" %>
+<%@ page import="wedeal.bean.*" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!-- 
 	게시판 페이지
 	게시판 페이지는 회원 session없이도 접속 가능함.
@@ -14,40 +15,36 @@
 	게시글의 제목을 클릭할 경우 write.jsp로 넘어감.
 	최종 수정: 2017/11/05
 -->
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="viewport" content="width=device-width", initial-scale="1">
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<title>게시판 화면</title>
+	<title>메인 화면</title>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>
+	<meta name="viewport" content="width=device-width", initial-scale="1">
+	<link rel="stylesheet" href="css/bootstrap.css">
 	<script type="text/javascript">
 		function logout(){
 			var user_id = $('#user_id').val();
 			$.ajax({
 				type: 'POST',
-				url: './UserLogoutServlet',
+				url: './LogoutAction',
 			})
 		}
 	</script>
-<style type="text/css">
+</head>
+<body>
+	<style type="text/css">
 	a, a:hover{
 		color: #000000;
 		text-decoration: none;
 	}
-</style>
-</head>
-<body>
+	</style>
 	<%
-		String session_id=null;
-	
-		if(session.getAttribute("user_id") !=null){
-			session_id=(String)session.getAttribute("user_id");
-		}
 		int pageNumber = 1; //기본페이지 초기값
-		if(request.getParameter("pageNumber")!=null){
+		if(request.getParameter("pageNumber") != null){
 			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
 		}
 	%>
@@ -63,13 +60,9 @@
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li><a href="index.jsp">메인</a></li>
-				<li class="active"><a href="board.jsp">게시판</a></li>
+				<li class="active"><a href="index.jsp">메인</a></li>
 			</ul>
-			<%
-				if(session_id == null){
-				//-------------------------------------------------------로그인이 되어있지 않은 경우
-			%>
+			<c:if test="${user_id eq null}">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -80,10 +73,8 @@
 					 </ul>
 				</li>
 			</ul>
-			<% 
-				} else{
-				//-------------------------------------------------------로그인이 되어있는 경우
-			%>
+			</c:if>
+			<c:if test="${user_id ne null}">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -93,59 +84,103 @@
 					 </ul>
 				</li>
 			</ul>
-			<%
-				} 
-			%>
+			</c:if>
 		</div>
 	</nav>
+	<div id="catelist">
+	<ul>
+	<li><a href="board.jsp">게시판</a></li>
+	<%
+	//수정할것임
+		CateDBBean cate = CateDBBean.getinstance();
+		ArrayList<CateDataBean> out_cate = cate.getList();
+		ArrayList<CateDataBean> in_cate = cate.in_getList();
+		for(int i = 0; i < out_cate.size(); i++){
+	%>
+		<li><a href="board.jsp?cate_num=<%=out_cate.get(i).getCate_num()%>"><%= out_cate.get(i).getCate_name()%></a></li>
+		<ul>
+	<%
+		for(int j = 0; j < in_cate.size(); j++){
+			if(in_cate.get(j).getCate_parent() == out_cate.get(i).getCate_num()){
+	%>
+		<li><a href="board.jsp?cate_num=<%=in_cate.get(j).getCate_num()%>"><%=in_cate.get(j).getCate_name()%></a></li>
+	<%
+			}}
+	%>
+		</ul>
+	<%	
+		}
+	%>
+		</ul>
+	</div>
 	<div class="container">
 		<div class="row">
-		<!-------------------------------- 글 목록을 테이블로 생성하는 부분 -------------------------------->
-			<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
+		<!-- 테이블 색 -->
+			<table class="table table-striped" border: 1px solid #dddddd" width="1000" height="600">
 				<thead>
 					<tr>
-						<th style="background-color: #eeeeee; text-align: center;">번호</th>
-						<th style="background-color: #eeeeee; text-align: center;">제목</th>
-						<th style="background-color: #eeeeee; text-align: center;">작성자</th>
-						<th style="background-color: #eeeeee; text-align: center;">작성일</th>
+						<th colspan="5" style="background-color: #eeeeee; text-align: center;" height="30">게시판</th>
 					</tr>
 				</thead>
 				<tbody>
-					<%
-						boardDAO boarddao = new boardDAO();
-						ArrayList<boardDTO> list = boarddao.getList(pageNumber);
-						for(int i = 0; i < list.size(); i++){
-							
-					%>
 					<tr>
-						<td><%=list.get(i).getBoard_num() %></td>
-						<td><a href="view.jsp?board_num=<%=list.get(i).getBoard_num() %>"><%=list.get(i).getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>") %></a></td>
-						<td><%=list.get(i).getUser_id() %></td>
-						<td><%=list.get(i).getBoard_date().substring(0,11) + list.get(i).getBoard_date().substring(11,13)+"시" + list.get(i).getBoard_date().substring(14,16)+"분"%></td>
-					</tr>
-					<% 
-						} 
-					%>
+				<%
+					BoardDBBean board = BoardDBBean.getinstance();
+					ArrayList<BoardDataBean> list = board.getList(pageNumber);
+					int length = 0;
 					
+					if(request.getParameter("cate_num") != null){
+						int cate_num = Integer.parseInt(request.getParameter("cate_num"));
+						length = board.allCount(cate_num);
+							//만약에 클릭된 in_cate가 있다면 그것만 보여주고 아니라면 전체보여주기
+						}
+					
+					else{
+						length = board.allCount(0);
+					}
+						
+					if(list == null){
+				%>
+						<td align="center">등록된 게시글이 없습니다.</td>
+				<%
+					}
+					else{
+						//8에 나누어 떨어지면 페이지를 하나 더 만들 필요가 없음
+						if(length%8 == 0)
+							length = length/8;
+						//8보다 크고 나머지가 있다면 하나의 페이지를 더 만들어 줘야함
+						else if((length%8) != 0)
+							length = length/8 + 1;
+						for(int i = 0; i < list.size(); i++){
+							String image = list.get(i).getBoard_image();
+							String[] images = image.split("/");
+				%>
+						<td align="center"><a href="view.jsp?board_num=<%=list.get(i).getBoard_num() %>&user_id=${user_id}"><%=list.get(i).getBoard_title().replaceAll(" ","&nbsp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll("\n","<br>")%></a><%="<br>"%>
+						<label>작성자:<%=list.get(i).getUser_id() %></label><%="<br>"%>
+						<a href="view.jsp?board_num=<%=list.get(i).getBoard_num()%>&user_id=${user_id}"><img src="<%= list.get(i).getBoard_path() %>\<%= images[0] %>" height= 200px width=200px></a><%="<br>"%>
+						<%=list.get(i).getBoard_date().substring(0,11) + list.get(i).getBoard_date().substring(11,13)+"시" + list.get(i).getBoard_date().substring(14,16)+"분"%></td>
+				<% 
+						if((i+1)%4==0 && i>0) {
+				%>
+						</tr>
+						<tr>
+				<% 
+							}
+						}
+					}
+				%>
+				
+					</tr>
 				</tbody>
 			</table>
 			<% 
-				//-------------------------------------- 페이지 넘기는 버튼 생성하는 부분 --------------------------------------
-				if(pageNumber != 1) {
+				for(int j = 0; j < length; j++){
 			%>
-				<a href="board.jsp?pageNumber=<%=pageNumber - 1%>" class="btn btn-success btn-arraw-left">이전</a>
+				<a href="board.jsp?pageNumber=<%=j+1%>" class="btn btn-success btn-arraw-left"><%=j+1%></a>
 			<% 
-				} if(boarddao.nextPage(pageNumber + 1)){
-			%>
-				<a href="board.jsp?pageNumber=<%=pageNumber + 1%>" class="btn btn-success btn-arraw-left">다음</a>
-			<%
-				}
-				if(session_id != null){
-			%>
-			<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
-			<%
 				}
 			%>
+				<a href="write.jsp" class="btn btn-primary pull-right">글쓰기</a>
 		</div>
 	</div>
 </body>

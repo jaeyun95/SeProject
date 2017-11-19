@@ -33,7 +33,7 @@ public class CateListAction extends HttpServlet {
 		ArrayList<CateDataBean> in_list = catedbbean.in_getList();
 		count = list.size();
 		in_count = in_list.size();
-
+		System.out.println("아아");
 		request.setAttribute("in_list", in_list);
 		request.setAttribute("in_count", new Integer(in_count));
 		request.setAttribute("list", list);

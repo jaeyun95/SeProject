@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ page import="java.io.PrintWriter" %>
+<%@ page import="wedeal.bean.*" %>
+<%@ page import="java.util.*" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!-- 
 	main페이지
@@ -23,19 +26,13 @@
 			var user_id = $('#user_id').val();
 			$.ajax({
 				type: 'POST',
-				url: './UserLogoutServlet',
+				url: './LogoutAction',
 			})
 		}
 	</script>
 </head>
+
 <body>
-	<%
-		String session_id=null;
-	
-		if(session.getAttribute("user_id") !=null){
-			session_id=(String)session.getAttribute("user_id");
-		}
-	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
@@ -49,12 +46,8 @@
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="index.jsp">메인</a></li>
-				<li><a href="board.jsp">게시판</a></li>
 			</ul>
-			<%
-				if(session_id == null){
-				//-------------------------------------------------------로그인이 되어있지 않은 경우
-			%>
+			<c:if test="${user_id eq null}">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -65,10 +58,8 @@
 					 </ul>
 				</li>
 			</ul>
-			<% 
-				} else{
-				//-------------------------------------------------------로그인이 되어있는 경우
-			%>
+			</c:if>
+			<c:if test="${user_id ne null}">
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
@@ -78,10 +69,35 @@
 					 </ul>
 				</li>
 			</ul>
-			<%
-				} 
-			%>
+			</c:if>
 		</div>
 	</nav>
+	<div id="catelist">
+	<ul>
+		<li><a href="board.jsp">게시판</a></li>
+	<%
+	//수정할것임
+		CateDBBean cate = CateDBBean.getinstance();
+		ArrayList<CateDataBean> out_cate = cate.getList();
+		ArrayList<CateDataBean> in_cate = cate.in_getList();
+		for(int i = 0; i < out_cate.size(); i++){
+	%>
+		<li><a href="board.jsp?cate_num=<%=out_cate.get(i).getCate_num()%>"><%= out_cate.get(i).getCate_name()%></a></li>
+		<ul>
+	<%
+		for(int j = 0; j < in_cate.size(); j++){
+			if(in_cate.get(j).getCate_parent() == out_cate.get(i).getCate_num()){
+	%>
+		<li><a href="board.jsp?cate_num=<%=in_cate.get(j).getCate_num()%>"><%=in_cate.get(j).getCate_name()%></a></li>
+	<%
+			}}
+	%>
+		</ul>
+	<%	
+		}
+	%>
+		</ul>
+	</div>
+
 </body>
 </html>
