@@ -10,6 +10,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -236,5 +237,113 @@ public class UserDBBean {
 				}
 			}
 			return true;
+		}
+		/**
+		 * 
+		 * @param user_id
+		 * @return UserDataBean 관리자가 사용자의 id를 검색하거나 metadata 사용시 이용
+		 */
+		public UserDataBean getUserByID(String user_id) {
+			UserDataBean user = new UserDataBean();
+			PreparedStatement preparedStatement = null;
+			ResultSet rs = null;
+			try {
+				preparedStatement = conn.prepareStatement("select * from user where user_id=?");
+				preparedStatement.setString(1, user_id);
+				rs = preparedStatement.executeQuery();
+
+				if (rs.next()) {
+					user.setUser_name(rs.getString("user_age"));
+					user.setUser_age(rs.getInt("user_age"));
+					user.setUser_phone(rs.getString("user_phone"));
+					user.setUser_id(rs.getString("user_id"));
+					user.setUser_pw(rs.getString("user_pw"));
+					user.setUser_hope(rs.getString("user_hope_1"));
+					user.setUser_date(rs.getString("user_date"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return user;
+		}
+
+		/**
+		 * 
+		 * @param userName
+		 * @return User 관리자가 회원을 이름으로 조회하는 메소드
+		 */
+		public UserDataBean getUserByName(String userName) {
+			UserDataBean user = new UserDataBean();
+			PreparedStatement preparedStatement = null;
+			ResultSet rs = null;
+			try {
+				preparedStatement = conn.prepareStatement("select * from user where user_name=?");
+				preparedStatement.setString(1, userName);
+				rs = preparedStatement.executeQuery();
+
+				if (rs.next()) {
+					user.setUser_name(rs.getString("user_name"));
+					user.setUser_age(rs.getInt("user_age"));
+					user.setUser_phone(rs.getString("user_phone"));
+					user.setUser_id(rs.getString("user_id"));
+					user.setUser_pw(rs.getString("user_pw"));
+					user.setUser_hope(rs.getString("user_hope"));
+					user.setUser_date(rs.getString("user_date"));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			return user;
+		}
+
+		public ArrayList<UserDataBean> getAllUser() {
+			ArrayList<UserDataBean> list = new ArrayList<UserDataBean>();
+			try {
+				String sql = "select * from webshop_member";
+				pstmt = conn.prepareStatement(sql);
+				rs = pstmt.executeQuery();
+				while (rs.next()) {
+					UserDataBean user = new UserDataBean();
+					user.setUser_name(rs.getString("name"));
+					user.setUser_age(rs.getInt("age"));
+					user.setUser_phone(rs.getString("user_phone"));
+					user.setUser_id(rs.getString("id"));
+					user.setUser_pw(rs.getString("user_pw"));
+					user.setUser_hope(rs.getString("hope"));
+					user.setUser_date(rs.getString("date"));
+					list.add(user);
+				}
+			} catch (Exception e) {
+				System.out.println("getAllUser err : " + e.getMessage());
+			} finally {
+				try {
+					if (rs != null)
+						rs.close();
+					if (pstmt != null)
+						pstmt.close();
+					if (conn != null)
+						conn.close();
+				} catch (Exception e2) {
+				}
+			}
+			return list;
 		}
 }

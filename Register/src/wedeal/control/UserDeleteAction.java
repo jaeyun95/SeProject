@@ -1,3 +1,9 @@
+/**
+ * 관리자가 사용자를 강제 탈퇴시키는 서블릿
+ * 작성일 : 17.11.19
+ * 수정일 :
+ * 작성자 : 정은진
+ */
 package wedeal.control;
 
 import java.io.IOException;
@@ -16,18 +22,15 @@ import wedeal.bean.UserDataBean;
 /**
  * Servlet implementation class UserListAction
  */
-@WebServlet("/UserListAction")
-public class UserListAction extends HttpServlet {
+@WebServlet("/UserDeleteAction")
+public class UserDeleteAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doPost(request, response);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<UserDataBean> userList = null;
-		userList = UserDBBean.getinstance().getAllUser();
-		if(userList.size() > 0)
-			request.setAttribute("userList", userList);
-		request.setAttribute("count", new Integer(userList.size()));
+		String user_id = request.getParameter("user_id");
+		UserDBBean.getinstance().deleteUser(user_id);
 		
 		RequestDispatcher dispatcher = request.getRequestDispatcher("mngr/memeber/fullMemberManage.jsp");
 		dispatcher.forward(request, response);

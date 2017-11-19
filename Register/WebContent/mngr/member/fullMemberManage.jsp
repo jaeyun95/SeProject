@@ -1,12 +1,47 @@
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-    pageEncoding="EUC-KR"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
-<title>Insert title here</title>
-</head>
-<body>
+<!-- 
+전체회원관리 페이지
+작성자 : 정은진
+수정자:
+최종수정일 : 17.11.16
+ -->
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<script src="/Register/js/jquery-1.11.0.min.js"></script>
+<script src="/Register/mngr/member/fullMemberManage.js"></script>
 
-</body>
-</html>
+
+<div class="list">
+<div id="button">
+	<button id="bb">제발ㅠ</button>
+</div>
+	<c:if test="${empty count}">
+		<ul>
+			<li>사용자가 없습니다.
+		</ul>
+	</c:if>
+	<c:if test="${count > 0}">
+		<li>가입한 회원수 : ${userList.size()}</li>
+		<table>
+			<tr>
+				<th>사용자 이름</th>
+				<th>가입 날짜</th>
+				<th>사용자 아이디</th>
+				<th>사용자 아이디</th>
+			</tr>
+			<c:forEach var="user" items="${userList}">
+				<tr>
+					<td>${user.getUser_id()}</td>
+					<td>${user.getUser_name()}</td>
+					<td>${user.getUser_date()}</td>
+				
+					<td><td><button id="stop">정지</button></td>
+					<td><button id="out">강제탈퇴</button></td>
+				</tr>
+			</c:forEach>
+		</table>
+	</c:if>
+</div>

@@ -1,3 +1,8 @@
+/**
+ * 게시글 일반 검색(by이름) 서블릿
+ * 수정일 : 
+ * 작성자 : 정은진
+ */
 package wedeal.control;
 
 import java.io.IOException;
@@ -34,6 +39,4 @@ public class SearchAction extends HttpServlet {
 		}
 		return "success"; //반환형이 string형이기 때문에 일단 해놈. 상의 ㄱㄱ
 	}
-	}
-
 }
