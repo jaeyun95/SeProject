@@ -42,11 +42,15 @@
 		text-decoration: none;
 	}
 	</style>
+	<c:set var="pageNumber" value=1/>
+	<c:if test = "${pageNumber ne null}">
+		<c:set var="pageNumber" value="${pageNumber}"/>
+	</c:if>
 	<%
-		int pageNumber = 1; //기본페이지 초기값
-		if(request.getParameter("pageNumber") != null){
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-		}
+		//int pageNumber = 1; //기본페이지 초기값
+		//if(request.getParameter("pageNumber") != null){
+		//	pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		//}
 	%>
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
