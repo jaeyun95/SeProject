@@ -24,6 +24,7 @@
 		</ul>
 	</c:if>
 	<c:if test="${count > 0}">
+		<li>가입한 회원수 : ${userList.size()}</li>
 		<table>
 			<tr>
 				<th>사용자 이름</th>
@@ -33,10 +34,12 @@
 			</tr>
 			<c:forEach var="user" items="${userList}">
 				<tr>
+					<td>${user.getUser_id()}</td>
 					<td>${user.getUser_name()}</td>
 					<td>${user.getUser_date()}</td>
-					<td>${user.getUser_id()}</td>
-					<td>${user.getUser_id()}</td>
+				
+					<td><td><button id="stop">정지</button></td>
+					<td><button id="out">강제탈퇴</button></td>
 				</tr>
 			</c:forEach>
 		</table>

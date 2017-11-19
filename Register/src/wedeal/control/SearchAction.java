@@ -1,3 +1,8 @@
+/**
+ * 게시글 일반 검색(by이름) 서블릿
+ * 수정일 : 
+ * 작성자 : 정은진
+ */
 package wedeal.control;
 
 import java.io.IOException;
