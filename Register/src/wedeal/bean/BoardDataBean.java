@@ -13,6 +13,7 @@ public class BoardDataBean {
 	private String board_path;
 	private int board_hit;
 	private int board_available;
+	private int board_like;
 	
 	public int getCate_num() {
 		return cate_num;
@@ -80,6 +81,13 @@ public class BoardDataBean {
 	public void setBoard_available(int board_available) {
 		this.board_available = board_available;
 	}
-	
-	
+	public int getBoard_like() {
+		return board_like;
+	}
+	public void setBoard_like(int board_like) {
+		this.board_like = board_like;
+	}
+	public int getBoard_available() {
+		return board_available;
+	}
 }

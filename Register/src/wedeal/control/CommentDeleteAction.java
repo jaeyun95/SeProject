@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import wedeal.bean.*;
 
 @WebServlet("/CommentDeleteAction")
 public class CommentDeleteAction extends HttpServlet {
@@ -22,22 +23,23 @@ public class CommentDeleteAction extends HttpServlet {
 		
 		int comment_num=Integer.parseInt(request.getParameter("comment_num"));
 		int board_num = Integer.parseInt(request.getParameter("board_num"));
-		int result = new commentDAO().delete(comment_num);
 		
+		CommentDBBean comment = CommentDBBean.getinstance();
+		int result = comment.delete(comment_num);
+
 		if(result == -1) {
 			request.getSession().setAttribute("messageType", "오류 메시지");
 			request.getSession().setAttribute("messageContent", "댓글 삭제를 실패했습니다.");
-			response.sendRedirect("view.jsp?board_num="+board_num);
+			response.sendRedirect("board.jsp");
 			return;
 		}
 		else {
 			request.getSession().setAttribute("messageType", "성공 메시지");
 			request.getSession().setAttribute("messageContent", "댓글 삭제를 성공했습니다.");
-			response.sendRedirect("view.jsp?board_num="+board_num);
+			response.sendRedirect("board.jsp");
 			return;
 		}
 	}
-
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 

@@ -13,7 +13,7 @@ public class UserDataBean {
 	private String user_pw;
 	private String user_hope;
 	private String user_date;
-	
+
 	public String getUser_name() {
 		return user_name;
 	}

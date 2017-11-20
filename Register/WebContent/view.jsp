@@ -173,6 +173,8 @@
 					<a href="update.jsp?board_num=<%= board.getBoard_num() %>&cate_num=<%=board.getCate_num() %>" class="btn btn-primary">수정</a>
 					<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteAction?cate_num=<%=board.getCate_num()%>&board_num=<%=board.getBoard_num() %>" class="btn btn-primary">삭제</a>
 					<a href="/UserLikeServlet?board_num=<%= board.getBoard_num() %>&cate_num<%=board.getCate_num() %>" class="btn btn-primary">좋아요</a>
+					<a href="./DeclarationAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-primary">신고</a>
+					
 			<%
 				}
 			%>
@@ -217,8 +219,8 @@
 							int comment_num = list.get(i).getComment_num();
 					%>
 						<td>
-						<input type=button onclick="updateComment();" class="btn btn-primary" value="수정"></a>
-						<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="./commentDeleteServlet?comment_num=<%=comment_num %>&board_num=<%=board_num %>" class="btn btn-primary">삭제</a>
+						<input type=button onclick="updateComment();" class="btn btn-primary" value="수정">
+						<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="./CommentDeleteAction?comment_num=<%=comment_num %>&board_num=<%=board_num %>" class="btn btn-primary">삭제</a>
 						</td>
 					</tr>
 					<%

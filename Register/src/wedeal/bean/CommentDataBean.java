@@ -7,6 +7,7 @@ public class CommentDataBean {
 	private String user_id;
 	private String comment_content;
 	private String comment_date;
+	private int comment_available;
 	
 	public int getCate_num() {
 		return cate_num;
@@ -43,5 +44,11 @@ public class CommentDataBean {
 	}
 	public void setComment_date(String comment_date) {
 		this.comment_date = comment_date;
+	}
+	public int getComment_available() {
+		return comment_available;
+	}
+	public void setComment_available(int comment_available) {
+		this.comment_available = comment_available;
 	}
 }
