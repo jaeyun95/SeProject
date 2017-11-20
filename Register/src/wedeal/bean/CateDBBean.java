@@ -152,7 +152,7 @@ public class CateDBBean {
 		}
 		return list;
 	}*/
-	
+	//카테고리 리스트를 출력	
 	public ArrayList<CateDataBean> in_getList(){
 		String SQL="SELECT * FROM cate WHERE cate_parent > 0 ORDER BY cate_num DESC";
 		ArrayList<CateDataBean> list = new ArrayList<CateDataBean>();
@@ -172,7 +172,7 @@ public class CateDBBean {
 		}
 		return list;
 	}
-	
+	//카테고리 리스트를 출력
 	public ArrayList<CateDataBean> getList(){
 		String SQL="SELECT * FROM cate WHERE cate_parent IS NULL ORDER BY cate_num DESC";
 		ArrayList<CateDataBean> list = new ArrayList<CateDataBean>();
