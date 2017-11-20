@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 public class DeclarationDBBean {
 	private Connection conn;
@@ -76,6 +77,7 @@ public class DeclarationDBBean {
 		return -1;
 	}
 	
+	//이미 신고한 사람인지 check 하나의 게시글을 여러번 신고할 수 없음
 	public int check_id(String user_id) {
 		String SQL="SELECT * FROM declaration WHERE user_id = ?";
 		try {
@@ -88,5 +90,29 @@ public class DeclarationDBBean {
 			e.printStackTrace();
 		}
 		return -1;	
+	}
+	
+	//모든 신고 목록을 보여준다.(한솔오빠 사용하는부분)
+	public ArrayList<DeclarationDataBean> declaration_getList(){
+		String SQL="SELECT * FROM declaration ";
+		ArrayList<DeclarationDataBean> list = new ArrayList<DeclarationDataBean>();
+		
+		try {
+				PreparedStatement pstmt=conn.prepareStatement(SQL);
+				rs=pstmt.executeQuery();
+
+			while(rs.next()) {
+				DeclarationDataBean declaration = new DeclarationDataBean();
+				declaration.setBoard_num(rs.getInt(1));
+				declaration.setDeclaration_num(rs.getInt(2));
+				declaration.setDeclaration_date(rs.getString(3));
+				declaration.setUser_id(rs.getString(4));
+				list.add(declaration);
+			}
+			return list;
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

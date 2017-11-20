@@ -153,6 +153,7 @@ public class BoardDBBean {
 		return -1;
 	}
 	
+	//하나의 게시글 정보를 얻어옴
 	public BoardDataBean getBoard(int board_num) {
 		String SQL="SELECT * FROM board WHERE board_num = ? AND board_available = 1";
 		try {
@@ -241,7 +242,7 @@ public class BoardDBBean {
 		return -1;
 	}
 	
-	//삭제된 board list를 불러온다
+	//삭제된 board list를 불러온다 (한솔오빠 사용하는부분)
 		public ArrayList<BoardDataBean> delete_getList(){
 			String SQL="SELECT * FROM board WHERE board_available = 0 ORDER BY board_num ";
 			ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
