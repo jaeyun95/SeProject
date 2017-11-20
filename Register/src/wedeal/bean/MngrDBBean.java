@@ -30,8 +30,15 @@ public class MngrDBBean {
 		}
 	}
 
-	public void deleteBoard(int userId) {
-		// TODO Auto-generated method stub
+	public void deleteBoard(int cate_num) {
+        try {
+            PreparedStatement preparedStatement = conn.prepareStatement("delete from users where cate_num=?");
+            preparedStatement.setInt(1, cate_num);
+            preparedStatement.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 	}
 
@@ -76,5 +83,15 @@ public class MngrDBBean {
 		}
 
 		return board;
+	}
+
+	public void addBoard(CateDataBean cateDataBean) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void updateBoard(CateDataBean cateDataBean) {
+		// TODO Auto-generated method stub
+		
 	}
 }

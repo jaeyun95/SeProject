@@ -22,7 +22,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			<c:forEach items="${borads}" var="board"><!--//var 값확인 필요  -->
+			<c:forEach items="${borads}" var="board">
 				<tr>
 					<td><c:out value="${board.boardId}" /></td>
 					<td><c:out value="${board.upBoardName}" /></td>

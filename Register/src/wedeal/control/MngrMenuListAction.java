@@ -81,17 +81,12 @@ public class MngrMenuListAction extends HttpServlet {
     	File file = null;
     	Enumeration files = null;
     	    	
-    	cateDataBean.setFirstName(multipartrequest.getParameter("firstName"));
-        try {
-            Date dob = new SimpleDateFormat("MM/dd/yyyy").parse(multipartrequest.getParameter("dob"));
-            user.setDob(dob);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        cateDataBean.setEmail(multipartrequest.getParameter("email"));
+    	cateDataBean.setCate_name(multipartrequest.getParameter("boardName"));//게시판이름
+    	cateDataBean.setUpCategoryName(multipartrequest.getParameter("upBoardName"));//상위게시판 이름
+        cateDataBean.setAdminName(multipartrequest.getParameter("adminName"));
         
 		try {
-			fileName = multipartrequest.getFilesystemName("filename"); // 파일의 이름 얻기
+			fileName = multipartrequest.getFilesystemName("fileName"); // 파일의 이름 얻기
 			
 			files = multipartrequest.getFileNames();//?
 			String name = (String) files.nextElement();
@@ -110,19 +105,19 @@ public class MngrMenuListAction extends HttpServlet {
 			System.out.print("예외 발생 : " + e);
 		} // catch
            
-		String userid = multipartrequest.getParameter("userid");
-        if(userid == null || userid.isEmpty())
+		String boardId = multipartrequest.getParameter("boardId");
+        if(boardId == null || boardId.isEmpty())
         {
-            dao.addUser(cateDataBean);
+            dao.addBoard(cateDataBean);//게시판 생성
         }
         else
         {
-        	cateDataBean.setUserid(Integer.parseInt(userid));
-            dao.updateUser(cateDataBean);
+        	cateDataBean.setCate_num(Integer.parseInt(boardId));
+            dao.updateBoard(cateDataBean);//게시판 수정
         }
         
-        RequestDispatcher view = request.getRequestDispatcher(LIST_USER);
-        request.setAttribute("users", dao.getAllUsers());
+        RequestDispatcher view = request.getRequestDispatcher(LIST_BORAD);
+        request.setAttribute("borads", dao.getAllBoard());
         view.forward(request, response);
     }
 
