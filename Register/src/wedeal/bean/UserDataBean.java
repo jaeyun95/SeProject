@@ -13,7 +13,14 @@ public class UserDataBean {
 	private String user_pw;
 	private String user_hope;
 	private String user_date;
+	private boolean user_stop;
 	
+	public boolean getUser_stop() {
+		return user_stop;
+	}
+	public void setUser_stop(boolean user_stop) {
+		this.user_stop = user_stop;
+	}
 	public String getUser_name() {
 		return user_name;
 	}
