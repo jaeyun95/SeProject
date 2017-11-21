@@ -136,6 +136,10 @@
 						<td colspan="2"><%= board.getBoard_hit() %></td>
 					</tr>
 					<tr>
+						<td>가격</td>
+						<td colspan="2"><%= board.getBoard_price() %></td>
+					</tr>
+					<tr>
 						<td>작성 일자</td>
 						<td><%=board.getBoard_date().substring(0,11) + board.getBoard_date().substring(11,13)+"시" + board.getBoard_date().substring(14,16)+"분"%></td>
 					</tr>
@@ -166,9 +170,11 @@
 			<%
 				if(request.getParameter("user_id").equals(board.getUser_id())){
 			%>
-					<a href="update.jsp" class="btn btn-primary">수정</a>
+					<a href="update.jsp?board_num=<%= board.getBoard_num() %>&cate_num=<%=board.getCate_num() %>" class="btn btn-primary">수정</a>
 					<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteAction?cate_num=<%=board.getCate_num()%>&board_num=<%=board.getBoard_num() %>" class="btn btn-primary">삭제</a>
 					<a href="/UserLikeServlet?board_num=<%= board.getBoard_num() %>&cate_num<%=board.getCate_num() %>" class="btn btn-primary">좋아요</a>
+					<a href="./DeclarationAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-primary">신고</a>
+					
 			<%
 				}
 			%>
@@ -177,7 +183,7 @@
 	
 	<div class="container">
 	<div class="row">
-		<form method="post" action="./commentWrite?board_num=<%=board.getBoard_num()%>">
+		<form method="post" action="./CommentWriteAction?board_num=<%=board.getBoard_num()%>&cate_num=<%=board.getCate_num()%>&user_id=<%=board.getUser_id()%>">
 			<table class="table table-striped" style="text-align: center; border: 1px solid #dddddd">
 				<thead>
 					<tr>
@@ -208,18 +214,17 @@
 						<td><%=list.get(i).getUser_id() %></td>
 						<td><%=list.get(i).getComment_content() %></td>
 						<td><%=list.get(i).getComment_date().substring(0,11) + list.get(i).getComment_date().substring(11,13)+"시" + list.get(i).getComment_date().substring(14,16)+"분"%></td>
-					<c:if test="${user_id eq board.getUser_id()}">
 					<%
-								int comment_num = list.get(i).getComment_num();
+						if(request.getParameter("user_id").equals(board.getUser_id())){
+							int comment_num = list.get(i).getComment_num();
 					%>
 						<td>
-						<input type=button onclick="updateComment();" class="btn btn-primary" value="수정"></a>
-						<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="./commentDeleteServlet?comment_num=<%=comment_num %>&board_num=<%=board_num %>" class="btn btn-primary">삭제</a>
+						<input type=button onclick="updateComment();" class="btn btn-primary" value="수정">
+						<a onclick="return confirm('정말로 삭제하시겠습니까?')"  href="./CommentDeleteAction?comment_num=<%=comment_num %>&board_num=<%=board_num %>" class="btn btn-primary">삭제</a>
 						</td>
-					</c:if>
 					</tr>
 					<%
-						}	
+						}	}
 					%>
 				
 				</tbody>
@@ -227,7 +232,5 @@
 			</form>
 		</div>
 	</div>
-
-
 </body>
 </html>

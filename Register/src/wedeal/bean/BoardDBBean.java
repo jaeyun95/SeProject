@@ -65,7 +65,7 @@ public class BoardDBBean {
 	
 	//DB에 입력 글쓰기
 	public int write(BoardDataBean board) {
-		String SQL="INSERT INTO board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String SQL="INSERT INTO board VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 		try {
 			PreparedStatement pstmt=conn.prepareStatement(SQL);
 			pstmt.setInt(1, board.getCate_num());
@@ -77,8 +77,9 @@ public class BoardDBBean {
 			pstmt.setString(7, board.getBoard_content());
 			pstmt.setString(8, board.getBoard_image());
 			pstmt.setString(9, board.getBoard_path());
-			pstmt.setInt(10, 0);
-			pstmt.setInt(11, 1);
+			pstmt.setInt(10, 0); //조회수
+			pstmt.setInt(11, 1); //삭제확인
+			pstmt.setInt(12, 0); //좋아요 수
 			return pstmt.executeUpdate();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -86,15 +87,17 @@ public class BoardDBBean {
 		return -1;
 	}	
 	
+	
 	//전체 게시글 list로 출력
 	public ArrayList<BoardDataBean> getList(int pageNumber){
 		String SQL="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
 		
 		try {
-			PreparedStatement pstmt=conn.prepareStatement(SQL);
-			pstmt.setInt(1, getNext()-(pageNumber-1)*8);
-			rs=pstmt.executeQuery();
+				PreparedStatement pstmt=conn.prepareStatement(SQL);
+				pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+				rs=pstmt.executeQuery();
+
 			while(rs.next()) {
 				BoardDataBean board = new BoardDataBean();
 				board.setCate_num(rs.getInt(1));
@@ -108,12 +111,14 @@ public class BoardDBBean {
 				board.setBoard_path(rs.getString(9));
 				board.setBoard_hit(rs.getInt(10));
 				board.setBoard_available(rs.getInt(11));
+				board.setBoard_like(rs.getInt(12));
 				list.add(board);
 			}
+			return list;
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
-		return list;
+		return null;
 	}
 	
 	//페이징 처리를 위한 nextpage함수
@@ -148,6 +153,7 @@ public class BoardDBBean {
 		return -1;
 	}
 	
+	//하나의 게시글 정보를 얻어옴
 	public BoardDataBean getBoard(int board_num) {
 		String SQL="SELECT * FROM board WHERE board_num = ? AND board_available = 1";
 		try {
@@ -167,6 +173,7 @@ public class BoardDBBean {
 				board.setBoard_path(rs.getString(9));
 				board.setBoard_hit(rs.getInt(10));
 				board.setBoard_available(rs.getInt(11));
+				board.setBoard_like(rs.getInt(12));
 				count(board.getBoard_num(),board.getBoard_hit()+1);
 				return board;
 			}
@@ -234,4 +241,36 @@ public class BoardDBBean {
 		}
 		return -1;
 	}
+	
+	//삭제된 board list를 불러온다 (한솔오빠 사용하는부분)
+		public ArrayList<BoardDataBean> delete_getList(){
+			String SQL="SELECT * FROM board WHERE board_available = 0 ORDER BY board_num ";
+			ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
+			
+			try {
+					PreparedStatement pstmt=conn.prepareStatement(SQL);
+					rs=pstmt.executeQuery();
+
+				while(rs.next()) {
+					BoardDataBean board = new BoardDataBean();
+					board.setCate_num(rs.getInt(1));
+					board.setBoard_num(rs.getInt(2));
+					board.setBoard_title(rs.getString(3));
+					board.setBoard_price(rs.getInt(4));
+					board.setUser_id(rs.getString(5));
+					board.setBoard_date(rs.getString(6));
+					board.setBoard_content(rs.getString(7));
+					board.setBoard_image(rs.getString(8));
+					board.setBoard_path(rs.getString(9));
+					board.setBoard_hit(rs.getInt(10));
+					board.setBoard_available(rs.getInt(11));
+					board.setBoard_like(rs.getInt(12));
+					list.add(board);
+				}
+				return list;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
 }
