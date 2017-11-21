@@ -6,7 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import board.boardDTO;
+import wedeal.bean.*;;
 
 public class BoardDBBean {
 	private Connection conn;

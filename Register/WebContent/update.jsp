@@ -111,7 +111,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td><input type="text" class="form-control" placeholder="글 제목" name="board_title" maxlength="50" value="<%= board.getBoard_title()%>"></td>
+						<td colspan="2"><input type="text" class="form-control" placeholder="글 제목" name="board_title" maxlength="50" value="<%= board.getBoard_title()%>"></td>
 					</tr>
 					<tr>
 						<td>
@@ -127,6 +127,8 @@
 							}
 						%>
 						</select>
+						</td>
+						<td>
 						<select class="form-control" id="cate_num" name="cate_num">
 						<option>소 카테고리를 선택해 주세요</option>
 						<% 
@@ -141,17 +143,33 @@
 						</td>
 					</tr>
 					<tr>
-						<td><input type="text" class="form-control" placeholder="가격" name="board_price" value="<%=board.getBoard_price() %>"></td>
+						<td colspan="2"><input type="text" class="form-control" placeholder="가격" name="board_price" value="<%=board.getBoard_price() %>"></td>
 					</tr>
 					<tr>
-						<td><textarea class="form-control" placeholder="글  내용" name="board_content" maxlength="2048" style="height: 350px;"><%= board.getBoard_content()%></textarea></td>
+						<td colspan="2"><textarea class="form-control" placeholder="글  내용" name="board_content" maxlength="2048" style="height: 350px;"><%= board.getBoard_content()%></textarea></td>
 					</tr>
 					<tr>
-						<td><label>최대 업로드 파일 수 : 5개</label></td>
+						<td colspan="2"><label>수정할 파일 선택</label></td>
 					</tr>
 					<tr>
-					<!-- 이전 파일 불러오는 기능 추가 -->
-						<td>
+						<td colspan="2">
+					<%
+							String image = board.getBoard_image();
+							String[] images = image.split("/");
+
+							for(int i = 0; i < images.length; i++){
+					%>
+						파일: <img src="<%= board.getBoard_path() %>\<%= images[i] %>" height= 100px width=100px><%= images[i] %><input type="checkbox" name="oldfile" value="<%=i%>"><%="<br>"%>
+					<%
+							}
+					%>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><label>최대 업로드 파일 수 : 5개(총 개수가 5개 초과시 가장 마지막에 업로드된 이미지 잘림)</label></td>
+					</tr>
+					<tr>
+						<td colspan="2">
 						파일: <input type="file" class="form-control" name="file1"><br>
 						파일: <input type="file" class="form-control" name="file2"><br>
 						파일: <input type="file" class="form-control" name="file3"><br>
