@@ -14,34 +14,31 @@
 <script src="/Register/mngr/member/fullMemberManage.js"></script>
 
 
-<div class="list">
-<div id="button">
-	<button id="bb">제발ㅠ</button>
-</div>
-	<c:if test="${empty count}">
+<div id="userList">
 		<ul>
-			<li>사용자가 없습니다.
+			<li>가입한 회원수 : ${count}</li>
 		</ul>
-	</c:if>
-	<c:if test="${count > 0}">
-		<li>가입한 회원수 : ${userList.size()}</li>
 		<table>
 			<tr>
-				<th>사용자 이름</th>
+				<th>아이디</th>
+				<th>이름</th>
 				<th>가입 날짜</th>
-				<th>사용자 아이디</th>
-				<th>사용자 아이디</th>
+				<th>활동 정지</th>
+				<th>강제 탈퇴</th>
 			</tr>
 			<c:forEach var="user" items="${userList}">
 				<tr>
 					<td>${user.getUser_id()}</td>
 					<td>${user.getUser_name()}</td>
 					<td>${user.getUser_date()}</td>
-				
-					<td><td><button id="stop">정지</button></td>
-					<td><button id="out">강제탈퇴</button></td>
+					<td><form action="./../../UserStopAction" method = "post">
+					<input type = submit value = "활동 정지">
+				</form></td>
+					<td><form action="./../../UserDeleteAction" method = "post">
+					<input type = submit value = "강제 탈퇴">
+				</form></td>
 				</tr>
 			</c:forEach>
 		</table>
-	</c:if>
 </div>
+<hr><button onclick = "../managerMain.jsp">뒤로 가기</button>
