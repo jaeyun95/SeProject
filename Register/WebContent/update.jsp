@@ -31,74 +31,16 @@
 </head>
 <body>
 	<%
-		String session_id=null;
-	
-		if(session.getAttribute("user_id") !=null){
-			session_id=(String)session.getAttribute("user_id");
-		}
-		if(session_id == null){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('로그인이 필요합니다.')");
-			script.println("location.href = 'login.jsp'");
-			script.println("</script>");
-		}
 		int board_num = 0;
 		
 		if(request.getParameter("board_num") != null){
 			board_num = Integer.parseInt(request.getParameter("board_num"));
 		}
-		
-		if(board_num == 0){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('유효하지 않은 글입니다.')");
-			script.println("location.href = 'board.jsp'");
-			script.println("</script>");
-		}
-		
 		BoardDataBean board = BoardDBBean.getinstance().getBoard(board_num);	
 	%>
-	<nav class="navbar navbar-default">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-			aria-expanded="false">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="index.jsp">중고 장터</a>
-		</div>
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a></li>
-				<li><a href="board.jsp">게시판</a></li>
-			</ul>
-			<c:if test="${user_id eq null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">접속하기<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="login.jsp">로그인</a></li>
-					 	<li><a href="join.jsp">회원가입</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-			<c:if test="${user_id ne null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">마이 페이지<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="" onclick="logout();">로그아웃</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-		</div>
-	</nav>
+	<!-- 상단바 -->
+	<jsp:include page="Menubar.jsp"/>
+	
 	<div class="container">
 		<div class="row">
 		<!-- 테이블 색 -->
@@ -183,49 +125,5 @@
 			</form>
 		</div>
 	</div>
-	<%
-		String messageContent = null;
-		if(session.getAttribute("messageContent") !=null) {
-			messageContent = (String) session.getAttribute("messageContent");
-		}
-		String messageType = null;
-		if(session.getAttribute("messageType") !=null) {
-			messageType = (String) session.getAttribute("messageType");
-		}
-
-		if(messageContent != null){
-	%>
-	
-	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="vertical-alignment-helper">
-			<div class="modal-dialog vertical-align-center">
-				<div class="modal-content <% if(messageType.equals("오류 메시지")) out.print("panel-warning"); else out.print("panel-success");%>">
-					<div class="modal-header-panel-heading">
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">&times;</span>
-							<span class="sr-only">Close</span>
-						</button>
-						<h4 class="modal-title">
-							<%= messageType %>
-						</h4>
-					</div>
-					<div class="modal-body">
-						<%= messageContent %>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script>
-		$('#messageModal').modal("show");
-	</script>
-	<%
-		session.removeAttribute("messageContent");
-		session.removeAttribute("messageType");
-		}
-	%>
 </body>
 </html>

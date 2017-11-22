@@ -78,11 +78,12 @@ public class DeclarationDBBean {
 	}
 	
 	//이미 신고한 사람인지 check 하나의 게시글을 여러번 신고할 수 없음
-	public int check_id(String user_id) {
-		String SQL="SELECT * FROM declaration WHERE user_id = ?";
+	public int check_id(DeclarationDataBean declaration) {
+		String SQL="SELECT * FROM declaration WHERE user_id = ? AND board_num = ?";
 		try {
 			PreparedStatement pstmt=conn.prepareStatement(SQL);
-			pstmt.setString(1, user_id);
+			pstmt.setString(1, declaration.getUser_id());
+			pstmt.setInt(2, declaration.getBoard_num());
 			rs = pstmt.executeQuery();
 			if(rs.next())
 				return 1;

@@ -89,11 +89,12 @@ public class LikeDBBean {
 		}
 		
 		//이미 좋아요 한 사람인지 check 하나의 게시글을 여러번 좋아요 할 수 없음
-		public int check_id(String user_id) {
-			String SQL="SELECT * FROM user_like WHERE user_id = ?";
+		public int check_id(String user_id, int board_num) {
+			String SQL="SELECT * FROM user_like WHERE user_id = ? AND board_num = ?";
 			try {
 				PreparedStatement pstmt=conn.prepareStatement(SQL);
 				pstmt.setString(1, user_id);
+				pstmt.setInt(2, board_num);
 				rs = pstmt.executeQuery();
 				if(rs.next()) {
 					return 1;
