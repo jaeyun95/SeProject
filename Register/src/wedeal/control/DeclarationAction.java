@@ -29,7 +29,7 @@ public class DeclarationAction extends HttpServlet {
 		declarationdt.setBoard_num(Integer.parseInt(request.getParameter("board_num")));
 		declarationdt.setUser_id(request.getParameter("user_id"));
 		
-		if(declaration.check_id(declarationdt.getUser_id()) == 1) {
+		if(declaration.check_id(declarationdt.getUser_id()) == -1) {
 			int result = declaration.declaration(declarationdt);
 		
 			if(result == -1) {

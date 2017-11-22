@@ -4,7 +4,7 @@
 <%@ page import="wedeal.bean.*" %>
 <%@ page import="java.util.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%@ taglib tagdir="/WEB-INF/tags" prefix="menutag" %>
 <!-- 
 	main페이지
 	로그인이 되어있지 않은 경우 접속하기를 통해 로그인, 회원가입이 가능. 로그인은 login.jsp로, 회원가입은 join.jsp로 이동.
@@ -41,11 +41,11 @@
 			<span class="icon-bar"></span>
 			<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="index.jsp">중고 장터</a>
+			<a class="navbar-brand" href="index.jsp">Wedeal</a>
 		</div>
 		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a></li>
+				<li><a href="index.jsp"><span class="glyphicon glyphicon-home" aria-hidden="true"></span> 메인</a></li>
 			</ul>
 			<c:if test="${user_id eq null}">
 			<ul class="nav navbar-nav navbar-right">
@@ -70,34 +70,17 @@
 				</li>
 			</ul>
 			</c:if>
+			<!-- 은진이 검색부분 연결!!! -->
+			<form class="navbar-form navbar-right" role="search">
+        	<div class="form-group">
+          	<input type="text" class="form-control" placeholder="Search">
+        	</div>
+        	<button type="submit" class="btn btn-default">Search</button>
+      		</form>
 		</div>
 	</nav>
-	<div id="catelist">
-	<ul>
-		<li><a href="board.jsp">게시판</a></li>
-	<%
-	//수정할것임
-		CateDBBean cate = CateDBBean.getinstance();
-		ArrayList<CateDataBean> out_cate = cate.getList();
-		ArrayList<CateDataBean> in_cate = cate.in_getList();
-		for(int i = 0; i < out_cate.size(); i++){
-	%>
-		<li><a href="board.jsp?cate_num=<%=out_cate.get(i).getCate_num()%>"><%= out_cate.get(i).getCate_name()%></a></li>
-		<ul>
-	<%
-		for(int j = 0; j < in_cate.size(); j++){
-			if(in_cate.get(j).getCate_parent() == out_cate.get(i).getCate_num()){
-	%>
-		<li><a href="board.jsp?cate_num=<%=in_cate.get(j).getCate_num()%>"><%=in_cate.get(j).getCate_name()%></a></li>
-	<%
-			}}
-	%>
-		</ul>
-	<%	
-		}
-	%>
-		</ul>
-	</div>
 
+	<!-- 메뉴 생성 부분 -->
+	<menutag:menu/>	
 </body>
 </html>
