@@ -88,7 +88,7 @@ public class BoardDBBean {
 	}	
 	
 	
-	//해당 게시판의 전체 게시글 list로 출력
+	//해당 게시판의 전체 게시글 list로 출력(8개씩)
 	public ArrayList<BoardDataBean> getList(int cate_num,int pageNumber){
 		String SQL1="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		String SQL2="SELECT * FROM board WHERE board_num < ? AND cate_num = ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
@@ -163,6 +163,21 @@ public class BoardDBBean {
 		return -1;
 	}
 	
+	//좋아요
+		public int like(int board_num,int board_like) {
+			String SQL="UPDATE board SET board_like = ? WHERE board_num = ?";
+			
+			try {
+				PreparedStatement pstmt=conn.prepareStatement(SQL);
+				pstmt.setInt(1, board_like);
+				pstmt.setInt(2, board_num);
+				return pstmt.executeUpdate();
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return -1;
+		}
+		
 	//하나의 게시글 정보를 얻어옴
 	public BoardDataBean getBoard(int board_num) {
 		String SQL="SELECT * FROM board WHERE board_num = ? AND board_available = 1";
@@ -283,4 +298,46 @@ public class BoardDBBean {
 			}
 			return null;
 		}
+		
+		
+		/*public ArrayList<BoardDataBean> AllgetList(){
+			String SQL="SELECT * FROM board ORDER BY board_like DESC";
+			ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
+			
+			try {
+				
+					if(cate_num == 0) {
+						PreparedStatement pstmt=conn.prepareStatement(SQL1);
+						pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+						rs=pstmt.executeQuery();
+					}
+					else {
+						PreparedStatement pstmt=conn.prepareStatement(SQL2);
+						pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+						pstmt.setInt(2, cate_num);
+						rs=pstmt.executeQuery();
+					}
+
+				while(rs.next()) {
+					BoardDataBean board = new BoardDataBean();
+					board.setCate_num(rs.getInt(1));
+					board.setBoard_num(rs.getInt(2));
+					board.setBoard_title(rs.getString(3));
+					board.setBoard_price(rs.getInt(4));
+					board.setUser_id(rs.getString(5));
+					board.setBoard_date(rs.getString(6));
+					board.setBoard_content(rs.getString(7));
+					board.setBoard_image(rs.getString(8));
+					board.setBoard_path(rs.getString(9));
+					board.setBoard_hit(rs.getInt(10));
+					board.setBoard_available(rs.getInt(11));
+					board.setBoard_like(rs.getInt(12));
+					list.add(board);
+				}
+				return list;
+			}catch(Exception e) {
+				e.printStackTrace();
+			}
+			return null;
+		}*/
 }

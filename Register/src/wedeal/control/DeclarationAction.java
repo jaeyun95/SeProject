@@ -29,12 +29,12 @@ public class DeclarationAction extends HttpServlet {
 		declarationdt.setBoard_num(Integer.parseInt(request.getParameter("board_num")));
 		declarationdt.setUser_id(request.getParameter("user_id"));
 		
-		if(declaration.check_id(declarationdt.getUser_id()) == -1) {
+		if(declaration.check_id(declarationdt) == -1) {
 			int result = declaration.declaration(declarationdt);
 		
 			if(result == -1) {
 				request.getSession().setAttribute("messageType", "오류 메시지");
-				request.getSession().setAttribute("messageContent", "글 수정이 실패했습니다.");
+				request.getSession().setAttribute("messageContent", "내부적인 오류입니다.");
 				response.sendRedirect("board.jsp");
 				return;
 			}
