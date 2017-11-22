@@ -88,15 +88,25 @@ public class BoardDBBean {
 	}	
 	
 	
-	//전체 게시글 list로 출력
-	public ArrayList<BoardDataBean> getList(int pageNumber){
-		String SQL="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
+	//해당 게시판의 전체 게시글 list로 출력
+	public ArrayList<BoardDataBean> getList(int cate_num,int pageNumber){
+		String SQL1="SELECT * FROM board WHERE board_num < ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
+		String SQL2="SELECT * FROM board WHERE board_num < ? AND cate_num = ? AND board_available = 1 ORDER BY board_num DESC LIMIT 8";
 		ArrayList<BoardDataBean> list = new ArrayList<BoardDataBean>();
 		
 		try {
-				PreparedStatement pstmt=conn.prepareStatement(SQL);
-				pstmt.setInt(1, getNext()-(pageNumber-1)*8);
-				rs=pstmt.executeQuery();
+			
+				if(cate_num == 0) {
+					PreparedStatement pstmt=conn.prepareStatement(SQL1);
+					pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+					rs=pstmt.executeQuery();
+				}
+				else {
+					PreparedStatement pstmt=conn.prepareStatement(SQL2);
+					pstmt.setInt(1, getNext()-(pageNumber-1)*8);
+					pstmt.setInt(2, cate_num);
+					rs=pstmt.executeQuery();
+				}
 
 			while(rs.next()) {
 				BoardDataBean board = new BoardDataBean();

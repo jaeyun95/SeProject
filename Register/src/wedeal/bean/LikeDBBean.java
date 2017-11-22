@@ -43,7 +43,7 @@ public class LikeDBBean {
 		
 		//좋아요 번호 
 		public int getNext() {
-			String SQL="SELECT like_num FROM like ORDER BY like_num DESC";
+			String SQL="SELECT like_num FROM user_like ORDER BY like_num DESC";
 			
 				try {
 					PreparedStatement pstmt=conn.prepareStatement(SQL);
@@ -60,7 +60,7 @@ public class LikeDBBean {
 		
 		//좋아요 추가
 		public int add(LikeDataBean like) {
-			String SQL="INSERT INTO like VALUES (?, ?, ?, ?)";
+			String SQL="INSERT INTO user_like VALUES (?, ?, ?, ?)";
 			try {
 				PreparedStatement pstmt=conn.prepareStatement(SQL);
 				pstmt.setString(1, like.getUser_id());
@@ -76,7 +76,7 @@ public class LikeDBBean {
 		
 		//좋아요 삭제
 		public int delete(LikeDataBean like) {
-			String SQL="DELETE FROM like WHERE user_id = ? AND board_num = ?";
+			String SQL="DELETE FROM user_like WHERE user_id = ? AND board_num = ?";
 			try {
 				PreparedStatement pstmt=conn.prepareStatement(SQL);
 				pstmt.setString(1, like.getUser_id());
@@ -90,7 +90,7 @@ public class LikeDBBean {
 		
 		//이미 좋아요 한 사람인지 check 하나의 게시글을 여러번 좋아요 할 수 없음
 		public int check_id(String user_id) {
-			String SQL="SELECT * FROM like WHERE user_id = ?";
+			String SQL="SELECT * FROM user_like WHERE user_id = ?";
 			try {
 				PreparedStatement pstmt=conn.prepareStatement(SQL);
 				pstmt.setString(1, user_id);
@@ -106,7 +106,7 @@ public class LikeDBBean {
 		
 		//user_id에 따라 좋아요한 글의 목록을 가져옴
 		public ArrayList<LikeDataBean> getList(String user_id){
-			String SQL="SELECT * FROM like WHERE user_id = ? ";
+			String SQL="SELECT * FROM user_like WHERE user_id = ? ";
 			ArrayList<LikeDataBean> list = new ArrayList<LikeDataBean>();
 			
 			try {
