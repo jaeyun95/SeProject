@@ -15,13 +15,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import wedeal.bean.BoardDBBean;
+import wedeal.bean.BoardDataBean;
+
 @WebServlet("/CategorySearchAction")
 public class CategorySearchAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String searchName = null;  //검색하려는 키워드
 		String searchCategory = null;
-		BoardDBBean searchService = BoardDBBean.getInstance();
+		BoardDBBean searchService = BoardDBBean.getinstance();
 		ArrayList<BoardDataBean> list = null;  //검색 결과를 가져올 list
 		try {  //해당 parameter가 없을 경우
 			searchName = request.getParameter("keyword");
@@ -29,7 +32,6 @@ public class CategorySearchAction extends HttpServlet {
 		} catch(NullPointerException e) {  //키워드의 내용이 없을 경우
 			e.printStackTrace();
 			request.setAttribute("error_message", e.getMessage() +"값을 입력해주세요");  //에러 메시지 저장
-			return "error";
 		}
 		try {
 			list = searchService.selectProductByCategory(searchName, searchCategory);  //물품의 이름으로 검색하는 메소드 실행
@@ -37,10 +39,6 @@ public class CategorySearchAction extends HttpServlet {
 		} catch(SQLException e) {
 			e.printStackTrace();
 			request.setAttribute("error_message",  e.getMessage());
-			return "error";
 		}
-		return "success"; //반환형이 string형이기 때문에 일단 해놈. 상의 ㄱㄱ
 	}
-	}
-
 }
