@@ -34,8 +34,8 @@ public class UserDBBean {
 	private UserDBBean() {
 		try {
 			String dbURL = "jdbc:mysql://localhost:3306/se?autoReconnect=true&useSSL=false";
-			String dbID = "jy";
-			String dbPW = "1365";
+			String dbID = "root";
+			String dbPW = "wjd123";
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPW);
 		}catch(Exception e) {
@@ -326,13 +326,14 @@ public class UserDBBean {
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
 				UserDataBean user = new UserDataBean();
-				user.setUser_name(rs.getString("name"));
-				user.setUser_age(rs.getInt("age"));
+				user.setUser_name(rs.getString("user_name"));
+				user.setUser_age(rs.getInt("user_age"));
 				user.setUser_phone(rs.getString("user_phone"));
-				user.setUser_id(rs.getString("id"));
+				user.setUser_id(rs.getString("user_id"));
 				user.setUser_pw(rs.getString("user_pw"));
-				user.setUser_hope(rs.getString("hope"));
-				user.setUser_date(rs.getString("date"));
+				user.setUser_hope(rs.getString("user_hope"));
+				user.setUser_date(rs.getString("user_date"));
+				user.setUser_stop(rs.getBoolean("user_stop"));
 				list.add(user);
 			}
 		} catch (Exception e) {
