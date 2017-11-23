@@ -24,8 +24,8 @@ public class BoardDBBean {
 	private BoardDBBean() {
 		try {
 			String dbURL = "jdbc:mysql://localhost:3306/se?autoReconnect=true&useSSL=false";
-			String dbID = "jy";
-			String dbPW = "1365";
+			String dbID = "root";
+			String dbPW = "wjd123";
 			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(dbURL, dbID, dbPW);
 		}catch(Exception e) {
