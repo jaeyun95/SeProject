@@ -21,7 +21,7 @@ public class BoardWriteAction extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static String board_path = "C:\\Users\\jaeyo\\eclipse-workspace\\image";
 	private static String enType = "utf-8";
-	private static int maxSize = 1 * 1024 * 1024; 
+	private static int maxSize = 1024 * 1024 * 1024; 
 	
     public BoardWriteAction() {
         super();

@@ -29,8 +29,8 @@ public class CommentWriteAction extends HttpServlet {
 		CommentDBBean comment = CommentDBBean.getinstance();
 		CommentDataBean commentdt = new CommentDataBean();
 		
-		commentdt.setCate_num(Integer.parseInt(request.getParameter("cate_num")));
-		commentdt.setBoard_num(Integer.parseInt(request.getParameter("board_num")));
+		String cate_num = request.getParameter("cate_num");
+		String board_num = request.getParameter("board_num");
 		commentdt.setComment_content(request.getParameter("comment_content"));
 		commentdt.setUser_id(request.getParameter("user_id"));
 
@@ -42,7 +42,16 @@ public class CommentWriteAction extends HttpServlet {
 			return;
 		}
 		
+		else if(cate_num == null || cate_num.equals("") || board_num == null || board_num.equals("") || commentdt.getUser_id() == null || commentdt.getUser_id().equals("")) {
+			request.getSession().setAttribute("messageType", "오류 메시지");
+			request.getSession().setAttribute("messageContent", "내부적인 오류입니다.");
+			response.sendRedirect("view.jsp");
+			return;
+		}
 		else {
+		commentdt.setCate_num(Integer.parseInt(cate_num));
+		commentdt.setBoard_num(Integer.parseInt(board_num));
+		
 		int result = comment.write(commentdt);
 		
 		if(result == -1) {

@@ -3,7 +3,7 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="wedeal.bean.*" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib tagdir="/WEB-INF/tags" prefix="menutag" %>
 <!-- 
 	게시글 보는 페이지
 	board.jsp에서 누른 게시글에 대한 board_num를 받아옴.
@@ -15,11 +15,6 @@
 <!DOCTYPE>
 <html>
 <head>
-	<meta name="viewport" content="width=device-width", initial-scale="1">
-	<link rel="stylesheet" href="css/bootstrap.css">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-	<script src="js/bootstrap.js"></script>
 	<title>메인 화면</title>
 	<script type="text/javascript">
 		function logout(){
@@ -33,6 +28,11 @@
 </head>
 <body>
 	
+	<!-- 상단바 -->
+	<jsp:include page="Menubar.jsp"/>
+	
+	<!-- 메뉴 생성 부분 -->
+	<menutag:menu/>
 	<%
 		int board_num = 0;
 		if(request.getParameter("board_num") != null){
@@ -47,71 +47,8 @@
 		}
 		BoardDataBean board = BoardDBBean.getinstance().getBoard(board_num);
 	%>
-		<nav class="navbar navbar-default">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-			aria-expanded="false">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="index.jsp">중고 장터</a>
-		</div>
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a></li>
-			</ul>
-			<c:if test="${user_id eq null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">접속하기<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="login.jsp">로그인</a></li>
-					 	<li><a href="join.jsp">회원가입</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-			<c:if test="${user_id ne null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">마이 페이지<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="" onclick="logout();">로그아웃</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-		</div>
-	</nav>
-	<div id="catelist">
-	<ul>
-	<li><a href="board.jsp">게시판</a></li>
-	<%
-	//수정할것임
-		CateDBBean cate = CateDBBean.getinstance();
-		ArrayList<CateDataBean> out_cate = cate.getList();
-		ArrayList<CateDataBean> in_cate = cate.in_getList();
-		for(int i = 0; i < out_cate.size(); i++){
-	%>
-		<li><a href="board.jsp?cate_num=<%=out_cate.get(i).getCate_num()%>"><%= out_cate.get(i).getCate_name()%></a></li>
-		<ul>
-	<%
-		for(int j = 0; j < in_cate.size(); j++){
-			if(in_cate.get(j).getCate_parent() == out_cate.get(i).getCate_num()){
-	%>
-		<li><a href="board.jsp?cate_num=<%=in_cate.get(j).getCate_num()%>"><%=in_cate.get(j).getCate_name()%></a></li>
-	<%
-			}}
-	%>
-		</ul>
-	<%	
-		}
-	%>
-		</ul>
-	</div>
+	
+	
 	<!-- 게시글에 관련된 부분 -->
 	<div class="container">
 		<div class="row">
@@ -161,26 +98,29 @@
 						<%
 							}
 						%>
-						
 						</td>
 					</tr>
 				</tbody>
 			</table>
-			<a href="board.jsp?cate_num=<%=board.getBoard_num()%>" class="btn btn-primary">목록</a>
-			<%
-				if(request.getParameter("user_id").equals(board.getUser_id())){
-			%>
-					<a href="update.jsp?board_num=<%= board.getBoard_num() %>&cate_num=<%=board.getCate_num() %>" class="btn btn-primary">수정</a>
-					<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteAction?cate_num=<%=board.getCate_num()%>&board_num=<%=board.getBoard_num() %>" class="btn btn-primary">삭제</a>
-					<a href="/UserLikeServlet?board_num=<%= board.getBoard_num() %>&cate_num<%=board.getCate_num() %>" class="btn btn-primary">좋아요</a>
-					<a href="./DeclarationAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-primary">신고</a>
+			<a href="board.jsp?cate_num=<%=board.getBoard_num()%>" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span></a>
+			<% if(request.getParameter("user_id") != null) {%>
 					
-			<%
-				}
-			%>
+					<% if(LikeDBBean.getinstance().check_id(request.getParameter("user_id"),board.getBoard_num()) == -1) {%>
+					<a href="./LikeAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-heart-empty" aria-hidden="true"></span></a>
+					<%} else{ %>
+					<a href="./LikeAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-heart" aria-hidden="true"></span></a>
+					<%} %>
+					<a href="./DeclarationAction?board_num=<%= board.getBoard_num() %>&user_id=${user_id}" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-ban-circle" aria-hidden="true"></span></a>
+			
+			<% }
+				if(request.getParameter("user_id").equals(board.getUser_id())) {%>
+				<a href="update.jsp?board_num=<%= board.getBoard_num() %>&cate_num=<%=board.getCate_num() %>" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
+				<a onclick="return confirm('정말로 삭제하시겠습니까?')" href="./BoardDeleteAction?cate_num=<%=board.getCate_num()%>&board_num=<%=board.getBoard_num() %>" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span></a>
+			<%} %>
 		</div>
 	</div>
 	
+	<!-- 댓글 기능 -->
 	<div class="container">
 	<div class="row">
 		<form method="post" action="./CommentWriteAction?board_num=<%=board.getBoard_num()%>&cate_num=<%=board.getCate_num()%>&user_id=<%=board.getUser_id()%>">

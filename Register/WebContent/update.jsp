@@ -31,74 +31,16 @@
 </head>
 <body>
 	<%
-		String session_id=null;
-	
-		if(session.getAttribute("user_id") !=null){
-			session_id=(String)session.getAttribute("user_id");
-		}
-		if(session_id == null){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('로그인이 필요합니다.')");
-			script.println("location.href = 'login.jsp'");
-			script.println("</script>");
-		}
 		int board_num = 0;
 		
 		if(request.getParameter("board_num") != null){
 			board_num = Integer.parseInt(request.getParameter("board_num"));
 		}
-		
-		if(board_num == 0){
-			PrintWriter script = response.getWriter();
-			script.println("<script>");
-			script.println("alert('유효하지 않은 글입니다.')");
-			script.println("location.href = 'board.jsp'");
-			script.println("</script>");
-		}
-		
 		BoardDataBean board = BoardDBBean.getinstance().getBoard(board_num);	
 	%>
-	<nav class="navbar navbar-default">
-		<div class="navbar-header">
-			<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"
-			aria-expanded="false">
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			<span class="icon-bar"></span>
-			</button>
-			<a class="navbar-brand" href="index.jsp">중고 장터</a>
-		</div>
-		<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-			<ul class="nav navbar-nav">
-				<li class="active"><a href="index.jsp">메인</a></li>
-				<li><a href="board.jsp">게시판</a></li>
-			</ul>
-			<c:if test="${user_id eq null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">접속하기<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="login.jsp">로그인</a></li>
-					 	<li><a href="join.jsp">회원가입</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-			<c:if test="${user_id ne null}">
-			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-					 aria-expanded="false">마이 페이지<span class="caret"></span></a>
-					 <ul class="dropdown-menu">
-					 	<li><a href="" onclick="logout();">로그아웃</a></li>
-					 </ul>
-				</li>
-			</ul>
-			</c:if>
-		</div>
-	</nav>
+	<!-- 상단바 -->
+	<jsp:include page="Menubar.jsp"/>
+	
 	<div class="container">
 		<div class="row">
 		<!-- 테이블 색 -->
@@ -111,7 +53,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td><input type="text" class="form-control" placeholder="글 제목" name="board_title" maxlength="50" value="<%= board.getBoard_title()%>"></td>
+						<td colspan="2"><input type="text" class="form-control" placeholder="글 제목" name="board_title" maxlength="50" value="<%= board.getBoard_title()%>"></td>
 					</tr>
 					<tr>
 						<td>
@@ -127,6 +69,8 @@
 							}
 						%>
 						</select>
+						</td>
+						<td>
 						<select class="form-control" id="cate_num" name="cate_num">
 						<option>소 카테고리를 선택해 주세요</option>
 						<% 
@@ -141,17 +85,33 @@
 						</td>
 					</tr>
 					<tr>
-						<td><input type="text" class="form-control" placeholder="가격" name="board_price" value="<%=board.getBoard_price() %>"></td>
+						<td colspan="2"><input type="text" class="form-control" placeholder="가격" name="board_price" value="<%=board.getBoard_price() %>"></td>
 					</tr>
 					<tr>
-						<td><textarea class="form-control" placeholder="글  내용" name="board_content" maxlength="2048" style="height: 350px;"><%= board.getBoard_content()%></textarea></td>
+						<td colspan="2"><textarea class="form-control" placeholder="글  내용" name="board_content" maxlength="2048" style="height: 350px;"><%= board.getBoard_content()%></textarea></td>
 					</tr>
 					<tr>
-						<td><label>최대 업로드 파일 수 : 5개</label></td>
+						<td colspan="2"><label>수정할 파일 선택</label></td>
 					</tr>
 					<tr>
-					<!-- 이전 파일 불러오는 기능 추가 -->
-						<td>
+						<td colspan="2">
+					<%
+							String image = board.getBoard_image();
+							String[] images = image.split("/");
+
+							for(int i = 0; i < images.length; i++){
+					%>
+						파일: <img src="<%= board.getBoard_path() %>\<%= images[i] %>" height= 100px width=100px><%= images[i] %><input type="checkbox" name="oldfile" value="<%=i%>"><%="<br>"%>
+					<%
+							}
+					%>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2"><label>최대 업로드 파일 수 : 5개(총 개수가 5개 초과시 가장 마지막에 업로드된 이미지 잘림)</label></td>
+					</tr>
+					<tr>
+						<td colspan="2">
 						파일: <input type="file" class="form-control" name="file1"><br>
 						파일: <input type="file" class="form-control" name="file2"><br>
 						파일: <input type="file" class="form-control" name="file3"><br>
@@ -165,49 +125,5 @@
 			</form>
 		</div>
 	</div>
-	<%
-		String messageContent = null;
-		if(session.getAttribute("messageContent") !=null) {
-			messageContent = (String) session.getAttribute("messageContent");
-		}
-		String messageType = null;
-		if(session.getAttribute("messageType") !=null) {
-			messageType = (String) session.getAttribute("messageType");
-		}
-
-		if(messageContent != null){
-	%>
-	
-	<div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="vertical-alignment-helper">
-			<div class="modal-dialog vertical-align-center">
-				<div class="modal-content <% if(messageType.equals("오류 메시지")) out.print("panel-warning"); else out.print("panel-success");%>">
-					<div class="modal-header-panel-heading">
-						<button type="button" class="close" data-dismiss="modal">
-							<span aria-hidden="true">&times;</span>
-							<span class="sr-only">Close</span>
-						</button>
-						<h4 class="modal-title">
-							<%= messageType %>
-						</h4>
-					</div>
-					<div class="modal-body">
-						<%= messageContent %>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-primary" data-dismiss="modal">확인</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<script>
-		$('#messageModal').modal("show");
-	</script>
-	<%
-		session.removeAttribute("messageContent");
-		session.removeAttribute("messageType");
-		}
-	%>
 </body>
 </html>
